@@ -1,18 +1,11 @@
 const mongoose = require('mongoose');
 const { authorSchema } = require('./authors');
-const { commentSchema } = require('./comment');
 
-
-const articleSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        minlength: 3
-    },
+const commentSchema = new mongoose.Schema({
     text: {
         type: String,
         required: true,
-        minlength: 15
+        minlength: 1
     },
     author: {
         type: authorSchema,
@@ -22,10 +15,6 @@ const articleSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    comments: [{
-        type: commentSchema,
-        required: false
-    }],
     createdAt: {
         type: Date,
         required: true
@@ -40,7 +29,7 @@ const articleSchema = new mongoose.Schema({
     },
 })
 
-const Article = mongoose.model('Article', articleSchema);
+const Comment = mongoose.model('Comment', commentSchema);
 
-module.exports = Article
-exports.articleSchema = articleSchema;
+exports.Comment = Comment
+exports.commentSchema = commentSchema;

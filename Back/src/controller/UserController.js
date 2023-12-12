@@ -43,6 +43,7 @@ class AuthControler {
         });
 
         try {
+            await Author.create(author);
             await User.create(user);
             res.status(201).send({ message: "Usuário cadastrado com sucesso" });
         } catch (error) {

@@ -23,6 +23,7 @@ class ArticleController {
         if (text.length < 15)
             return res.status(400).send({ message: "o artigo não pode ser menor que 15 caracteres" });
 
+
         try {
             const author = await authorController.getAuthor(authorid);
             const article = {
@@ -30,11 +31,12 @@ class ArticleController {
                 text,
                 likes: 0,
                 author,
+                comments: [],
                 createdAt: Date.now(),
                 updatedAt: Date.now(),
                 removedAt: null,
             }
-
+            console.log('a')
             await Article.create(article)
 
             return res.status(201).send({ message: "Artigo criado com sucesso" })
@@ -78,6 +80,19 @@ class ArticleController {
         } catch (error) {
             ArticleController.createLog(error);
             return res.status(500).send({ error: "Falha ao curtir", data: error.message })
+        }
+    }
+
+    static async getArticle(_id) {
+        try {
+            const article = await Article.findById(_id)
+
+            if (!article)
+                return res.status(404).send({ message: 'Artigo não encontrado' })
+            
+            return article
+        } catch (error) {
+            throw error;
         }
     }
 }
