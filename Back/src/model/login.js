@@ -22,6 +22,10 @@ const User = mongoose.model('User',
             required: true,
             minlength: 6
         },
+        liked: [{
+            type: String,
+            required: false
+        }], 
         createdAt: {
             type: Date,
             required: true

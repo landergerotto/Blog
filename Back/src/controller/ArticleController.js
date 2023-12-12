@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs')
 const authorController = require('./AuthorController')
 const Article = require('../model/article')
+const User = require('../model/login');
 
 class ArticleController {
     static createLog(error) {
@@ -44,12 +45,35 @@ class ArticleController {
     };
 
     static async likeArticle(req, res) {
-        const { id } = req.params;
-        if (!id)
-            return res.status(400).send({ message: "No id provider" })
+
+        const { artId } = req.params;
+        const { userId } = req.body;
+
+        if (!artId)
+            return res.status(400).send({ message: "No article id provider" })
+
+        if (!userId)
+            return res.status(400).send({ message: "No user id provider" })
+
         try {
-            const article = await Article.findById(id);
-            await Article.findByIdAndUpdate({ _id: id }, { likes: ++article.likes })
+            const user = await User.findById(userId);
+            const article = await Article.findById(artId);
+
+            if (user.liked != null) {
+                if (user.liked.includes(artId)) {
+                    user.liked = user.liked.filter( (item) => item != artId )
+
+                    await Article.findByIdAndUpdate({ _id: artId }, { likes: --article.likes })
+                    await User.findByIdAndUpdate({ _id: userId }, { liked: user.liked })
+                    return res.status(200).send();
+                }
+        }
+            
+            user.liked.push(artId)
+
+            await Article.findByIdAndUpdate({ _id: artId }, { likes: ++article.likes })
+            await User.findByIdAndUpdate({ _id: userId }, { liked: user.liked })
+
             return res.status(200).send();
         } catch (error) {
             ArticleController.createLog(error);
