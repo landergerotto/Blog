@@ -12,4 +12,4 @@ require('./startup/routes')(app);
 
 const port = 8080;
 
-app.listen(port, () => console.log(`Acesse: http://localhost:${port}/`));
+app.listen(port, () => console.log(`Acesse: http://localhost:${port}`));

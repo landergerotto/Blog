@@ -1,7 +1,12 @@
+const path = require('path');
+const fs = require('fs')
+const authorController = require('./authorController')
+const Article = require('../model/article')
+
 class ArticleController {
     static createLog(error) {
         const timestamp = Date.now();
-        const archivePath = path.resolve(__dirname, '..', `logs-${timestamp}.txt`);
+        const archivePath = path.resolve(__dirname, '../logs', `logs-${timestamp}.txt`);
         const errorString = JSON.stringify(error.message)
         fs.writeFile(archivePath, errorString, function (err, result) {
             if (err) console.log(err)
