@@ -4,6 +4,7 @@ const CommentController = require('../controller/CommentController');
 const route = express.Router();
 
 route
+    .get('/', ArticleController.getAllArticles)
     .post('/', ArticleController.create)
     .post('/like/:artId', ArticleController.likeArticle)
     .post('/dislike/:artId', ArticleController.likeArticle)

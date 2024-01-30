@@ -3,6 +3,10 @@ import { Button, Card, Form } from "react-bootstrap";
 import axios from "axios";
 import styles from "./styles.module.scss";
 import { AlertContext } from "../../context/alert";
+
+import { SECRET } from "../../env";
+import CryptoJS from "crypto-js";
+
 export default function CardRegister() {
   const { setMessage, setShow, setVariant } = useContext(AlertContext);
 
@@ -11,11 +15,7 @@ export default function CardRegister() {
   var [birth, setBirth] = useState(Date());
   var [password, setPassword] = useState("");
   var [confirmPass, setConfirmPass] = useState("");
-  
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (!formValid()) return;
-  }
+
   function formValid() {
     if (!name.includes(" ")) {
       setMessage("Insira nome e sobrenome");
@@ -55,6 +55,40 @@ export default function CardRegister() {
     }
     return true;
   }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!formValid()) return;
+
+    const json = {
+      name: name,
+      email: email,
+      birth: birth,
+      password: password,
+      confirmPassword: confirmPass,
+    };
+    const jsonCrypt = CryptoJS.AES.encrypt(
+      JSON.stringify(json),
+      SECRET
+    ).toString();
+
+    try {
+      var res = await axios.post("http://localhost:8080/api/login/register", {
+        jsonCrypt,
+      });
+      setMessage(res.data.message);
+      setVariant("success");
+      setShow(true);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPass("");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <Card className={styles.card}>
       <Card.Header className={styles.card__header}>

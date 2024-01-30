@@ -83,6 +83,12 @@ class ArticleController {
         }
     }
 
+    static async getAllArticles(req, res)
+    {
+        const articles = await Article.find();
+        return res.status(200).send(articles);
+    }
+
     static async getArticle(_id) {
         try {
             const article = await Article.findById(_id)
